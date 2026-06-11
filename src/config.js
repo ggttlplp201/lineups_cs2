@@ -26,7 +26,7 @@ const DEFAULTS = {
   },
   consoleLog: null,  // path to CS2's console.log (-condebug); null = auto-detect next to the GSI cfg
   vision: {
-    enabled: false,  // experimental radar vision (see README) — opt-in
+    enabled: true,   // experimental radar vision (see README); set false to turn off
     fps: 2,          // arrow detections per second
     region: { x: 0, y: 0, width: 480, height: 480 }, // screen rect of the radar
     calibration: {}  // per-map radar→world transforms, learned from getpos fixes
