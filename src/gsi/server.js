@@ -79,6 +79,16 @@ class GsiServer extends EventEmitter {
       // ACK immediately; never make the game wait on our processing.
       res.writeHead(200).end('');
 
+      if (req.url === '/position') {
+        // V2 position fixes (dev simulator now, screen-OCR later). These
+        // are not from CS2, so they must not feed the connected heartbeat.
+        const p = payload.position || payload;
+        if (typeof p.x === 'number' && typeof p.y === 'number') {
+          this.emit('position', { x: p.x, y: p.y, z: typeof p.z === 'number' ? p.z : null });
+        }
+        return;
+      }
+
       this.lastSeen = Date.now();
       if (!this.connected) {
         this.connected = true;

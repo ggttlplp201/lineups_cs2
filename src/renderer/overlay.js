@@ -11,6 +11,7 @@ const state = {
   gsiInstall: null,  // { ok, message, path } result of the GSI cfg install attempt
   showAll: false,    // true = ignore grenade/side filter, browse everything for the map
   selectedId: null,
+  autoId: null,      // V2: lineup auto-selected by proximity (AUTO badge)
   pinned: false,
   visible: []        // current list order (post filter/sort)
 };
@@ -72,7 +73,21 @@ function render() {
   renderList(mapName, list, matches);
   renderDetail();
   document.body.classList.toggle('pinned', state.pinned);
-  window.overlay.setPin(state.pinned); // keep main's auto-hide logic in sync
+  window.overlay.setPin(state.pinned);                  // keep main's auto-hide logic in sync
+  window.overlay.selectionChanged(state.selectedId);    // main needs this for Alt+S spot capture
+}
+
+// Every user-initiated selection goes through here so a proximity auto-pick
+// never fights a deliberate choice (main suppresses auto-select until the
+// player moves off the current spot).
+function manualPick(id) {
+  if (state.autoId && id !== state.autoId) {
+    window.overlay.manualSelect();
+    state.autoId = null;
+  }
+  state.selectedId = id;
+  state.pinned = false;
+  render();
 }
 
 function renderHeader() {
@@ -144,7 +159,7 @@ function renderList(mapName, list, matches) {
         <span class="sub">${esc(lu.target || '')}</span>
       </span>
       <span class="pips" title="difficulty">${difficultyPips(lu.difficulty)}</span>`;
-    li.addEventListener('click', () => { state.selectedId = lu.id; state.pinned = false; render(); });
+    li.addEventListener('click', () => manualPick(lu.id));
     ul.appendChild(li);
   }
   const sel = ul.querySelector('li.selected');
@@ -167,6 +182,7 @@ function renderDetail() {
   $('detail-target').textContent = lu.target || '';
   $('detail-difficulty').textContent = lu.difficulty || 'easy';
   $('detail-unverified').hidden = lu.verified !== false;
+  $('detail-auto').hidden = state.autoId !== lu.id;
   $('detail-pin').hidden = !state.pinned;
 
   renderShot('stand-shot', lu.stand);
@@ -234,9 +250,7 @@ function move(delta) {
   if (!state.visible.length) return;
   const i = state.visible.findIndex((l) => l.id === state.selectedId);
   const next = (i + delta + state.visible.length) % state.visible.length;
-  state.selectedId = state.visible[next].id;
-  state.pinned = false;
-  render();
+  manualPick(state.visible[next].id);
 }
 
 /* ---------- helpers ---------- */
@@ -278,5 +292,22 @@ window.overlay.onCommand((cmd) => {
 });
 
 $('filter-toggle').addEventListener('click', () => { state.showAll = !state.showAll; render(); });
+
+/* ---------- V2: proximity auto-select + spot capture feedback ---------- */
+window.overlay.onAutoSelect((id) => {
+  state.autoId = id;
+  state.selectedId = id;
+  render();
+});
+
+let toastTimer = null;
+window.overlay.onSpotCaptured(({ id, spot }) => {
+  const el = $('toast');
+  const z = spot.z == null ? '' : ` ${Math.round(spot.z)}`;
+  el.textContent = `Spot saved: ${id} (${Math.round(spot.x)} ${Math.round(spot.y)}${z})`;
+  el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.hidden = true; }, 2500);
+});
 
 window.overlay.ready();

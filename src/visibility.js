@@ -8,11 +8,13 @@
 // longer signals deliberate interaction.) The manual toggle hotkey keeps
 // working either way; this only reacts to context changes from GSI.
 
-function visibilityAction(ctx, { visible, pinned, autoShow }) {
+function visibilityAction(ctx, { visible, pinned, autoShow, onSpot = false }) {
   if (!autoShow) return null;
-  const equipped = !!(ctx && ctx.equippedGrenade);
-  if (equipped && !visible) return 'show';
-  if (!equipped && visible && !pinned) return 'hide';
+  // V2: standing on a known lineup spot is a show condition just like
+  // having a grenade out — walking onto the spot surfaces the card.
+  const wanted = !!(ctx && ctx.equippedGrenade) || !!onSpot;
+  if (wanted && !visible) return 'show';
+  if (!wanted && visible && !pinned) return 'hide';
   return null;
 }
 

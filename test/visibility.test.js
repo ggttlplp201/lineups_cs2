@@ -52,6 +52,20 @@ test('autoShow off → never acts', () => {
   );
 });
 
+test('standing on a spot shows even without a grenade out', () => {
+  assert.strictEqual(
+    visibilityAction(ctx(null), { visible: false, pinned: false, autoShow: true, onSpot: true }),
+    'show'
+  );
+});
+
+test('leaving the spot with no grenade hides', () => {
+  assert.strictEqual(
+    visibilityAction(ctx(null), { visible: true, pinned: false, autoShow: true, onSpot: false }),
+    'hide'
+  );
+});
+
 test('switching between grenades stays shown, no flicker', () => {
   // smoke → flash: still a grenade, window already visible → nothing to do
   assert.strictEqual(

@@ -17,6 +17,7 @@ const { GsiServer } = require('./gsi/server');
 const { ContextEngine } = require('./gsi/context');
 const { installGsiConfig } = require('./gsi/install-config');
 const { visibilityAction } = require('./visibility');
+const { ProximityEngine } = require('./proximity');
 
 const PROJECT_ROOT = path.join(__dirname, '..');
 const LINEUPS_DIR = path.join(PROJECT_ROOT, 'lineups');
@@ -56,6 +57,41 @@ function loadLineups() {
 function toFileUrl(relative) {
   const abs = path.join(PROJECT_ROOT, relative);
   return fs.existsSync(abs) ? pathToFileURL(abs).href : null; // null → renderer shows a "capture pending" placeholder
+}
+
+// V2: every lineup with a recorded `spot` becomes a proximity target.
+function collectSpots(maps) {
+  const spots = [];
+  for (const [map, lineups] of Object.entries(maps)) {
+    for (const lu of lineups) {
+      if (lu.spot && typeof lu.spot.x === 'number' && typeof lu.spot.y === 'number') {
+        spots.push({ id: lu.id, map, x: lu.spot.x, y: lu.spot.y, z: lu.spot.z });
+      }
+    }
+  }
+  return spots;
+}
+
+// V2 data capture: write the current position into a lineup's `spot` field
+// in whichever lineups/*.json holds it. Pretty-printed so diffs stay clean.
+function saveSpot(lineupId, pos) {
+  if (!fs.existsSync(LINEUPS_DIR)) return { ok: false, message: 'lineups/ not found' };
+  for (const file of fs.readdirSync(LINEUPS_DIR)) {
+    if (!file.endsWith('.json')) continue;
+    const full = path.join(LINEUPS_DIR, file);
+    try {
+      const doc = JSON.parse(fs.readFileSync(full, 'utf8'));
+      const lu = (doc.lineups || []).find((l) => l.id === lineupId);
+      if (!lu) continue;
+      const round = (n) => (n == null ? null : Math.round(n * 100) / 100);
+      lu.spot = { x: round(pos.x), y: round(pos.y), z: round(pos.z) };
+      fs.writeFileSync(full, JSON.stringify(doc, null, 2) + '\n');
+      return { ok: true, message: `${lineupId} → ${file}` };
+    } catch (err) {
+      return { ok: false, message: `Could not update ${file}: ${err.message}` };
+    }
+  }
+  return { ok: false, message: `Lineup ${lineupId} not found in any lineups/*.json` };
 }
 
 function createWindow(config) {
@@ -139,20 +175,78 @@ app.whenReady().then(() => {
     console.error(`GSI listener error: ${err.message}`);
     send('gsi-status', { connected: false, error: err.code === 'EADDRINUSE' ? `Port ${config.port} is in use` : err.message });
   });
-  engine.on('context', (ctx) => {
-    send('context', ctx);
+  // --- V2 proximity: position fixes → auto-select the spot's lineup ---
+  // Sources: the dev simulator today (npm run simulate-position), screen-
+  // OCR of cl_showpos later. cl_showpos is cheat-protected in CS2, so the
+  // whole layer is a practice-server feature; it changes nothing in
+  // matchmaking, where V1 manual selection remains the only mode.
+  const prox = new ProximityEngine(config.v2);
+  let allSpots = collectSpots(loadLineups());
+  let lastPosition = null;
+  let autoSpot = null;
+  let suppressedSpot = null;   // manual pick wins while still on this spot
+  let rendererSelection = null;
+
+  const syncSpots = () => {
+    const map = engine.context.map;
+    prox.setSpots(map ? allSpots.filter((s) => s.map === map) : allSpots);
+  };
+  syncSpots();
+
+  function applyVisibility() {
     if (!win || win.isDestroyed()) return;
+    const ctx = engine.context;
     const action = visibilityAction(ctx, {
       visible: win.isVisible(),
       pinned,
-      autoShow: config.overlay.autoShow
+      autoShow: config.overlay.autoShow,
+      onSpot: !!autoSpot
     });
     if (action === 'show') win.showInactive(); // never steal game focus
     else if (action === 'hide') win.hide();
-    if (action) console.log(`Auto-${action} (equipped: ${ctx.equippedGrenade || 'none'})`);
+    if (action) console.log(`Auto-${action} (equipped: ${ctx.equippedGrenade || 'none'}, onSpot: ${autoSpot || 'no'})`);
+  }
+
+  engine.on('context', (ctx) => {
+    send('context', ctx);
+    syncSpots();
+    applyVisibility();
+  });
+
+  gsi.on('position', (pos) => {
+    lastPosition = pos;
+    const id = prox.update(pos);
+    if (id === autoSpot) return;
+    autoSpot = id;
+    if (suppressedSpot && suppressedSpot !== id) suppressedSpot = null; // moved on → override expires
+    if (id && id !== suppressedSpot) send('auto-select', id);
+    applyVisibility();
   });
 
   ipcMain.on('pin-state', (_event, value) => { pinned = !!value; });
+  ipcMain.on('selection-changed', (_event, id) => { rendererSelection = id; });
+  ipcMain.on('manual-select', () => { suppressedSpot = autoSpot; });
+
+  // V2 data capture (Alt+S): records where you're standing into the
+  // selected lineup — builds the proximity DB during the verification pass.
+  if (config.hotkeys.capture) {
+    const ok = globalShortcut.register(config.hotkeys.capture, () => {
+      if (!rendererSelection || !lastPosition) {
+        console.error('Spot capture needs a selected lineup and a position fix (cl_showpos OCR or simulator).');
+        return;
+      }
+      const res = saveSpot(rendererSelection, lastPosition);
+      if (res.ok) {
+        allSpots = collectSpots(loadLineups());
+        syncSpots();
+        send('spot-captured', { id: rendererSelection, spot: lastPosition });
+        console.log(`Spot saved: ${res.message}`);
+      } else {
+        console.error(`Spot capture failed: ${res.message}`);
+      }
+    });
+    if (!ok) console.error(`Could not register hotkey ${config.hotkeys.capture} (capture) — already in use?`);
+  }
 
   ipcMain.on('renderer-ready', () => {
     send('init', {

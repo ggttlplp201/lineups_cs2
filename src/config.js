@@ -17,7 +17,12 @@ const DEFAULTS = {
     next: 'Alt+]',   // next lineup
     prev: 'Alt+[',   // previous lineup
     pin: 'Alt+P',    // pin the detail card (hides the list, keeps the card)
-    mouse: 'Alt+M'   // toggle click-through vs interactive mode
+    mouse: 'Alt+M',  // toggle click-through vs interactive mode
+    capture: 'Alt+S' // V2: save the current position into the selected lineup's spot
+  },
+  v2: {
+    radius: 120,     // units: enter a spot within this 2D distance
+    zTolerance: 200  // generous height tolerance (ramps/stairs/OCR noise)
   },
   overlay: {
     edge: 'right',   // 'left' | 'right'

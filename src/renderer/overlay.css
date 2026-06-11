@@ -117,6 +117,8 @@ body {
 }
 .chip.warn { color: var(--warn); border-color: var(--warn); }
 .chip.pin { color: var(--accent); border-color: var(--accent); }
+.chip.auto { color: var(--ok); border-color: var(--ok); }
+.toast { margin-top: 4px; font-size: 11px; color: var(--ok); }
 
 .step p { font-size: 12px; color: var(--text); margin-top: 5px; }
 .shot {

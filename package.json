@@ -7,6 +7,7 @@
     "start": "electron .",
     "install-gsi": "node src/gsi/install-config.js",
     "simulate": "node scripts/simulate-gsi.js",
+    "simulate-position": "node scripts/simulate-position.js",
     "test": "node --test"
   },
   "license": "MIT",

@@ -19,7 +19,12 @@
         "image": "img/mirage/stairs-tspawn/aim.jpg"
       },
       "throw": "jumpthrow",
-      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+      "movement": {
+        "jump": true,
+        "crouch": false,
+        "walk": false,
+        "strafe": null
+      }
     },
     {
       "id": "mirage-t-smoke-stairs-ramp",
@@ -38,7 +43,12 @@
         "image": "img/mirage/stairs-ramp/aim.jpg"
       },
       "throw": "left",
-      "movement": { "jump": false, "crouch": false, "walk": false, "strafe": null }
+      "movement": {
+        "jump": false,
+        "crouch": false,
+        "walk": false,
+        "strafe": null
+      }
     },
     {
       "id": "mirage-t-smoke-stairs-alt2",
@@ -57,7 +67,12 @@
         "image": "img/mirage/stairs-alt2/aim.jpg"
       },
       "throw": "jumpthrow",
-      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+      "movement": {
+        "jump": true,
+        "crouch": false,
+        "walk": false,
+        "strafe": null
+      }
     },
     {
       "id": "mirage-t-smoke-stairs-alt3",
@@ -76,7 +91,12 @@
         "image": "img/mirage/stairs-alt3/aim.jpg"
       },
       "throw": "left",
-      "movement": { "jump": false, "crouch": false, "walk": false, "strafe": null }
+      "movement": {
+        "jump": false,
+        "crouch": false,
+        "walk": false,
+        "strafe": null
+      }
     },
     {
       "id": "mirage-t-smoke-ticket-tspawn",
@@ -95,7 +115,12 @@
         "image": "img/mirage/ticket-tspawn/aim.jpg"
       },
       "throw": "jumpthrow",
-      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+      "movement": {
+        "jump": true,
+        "crouch": false,
+        "walk": false,
+        "strafe": null
+      }
     },
     {
       "id": "mirage-t-smoke-ticket-alt",
@@ -114,7 +139,12 @@
         "image": "img/mirage/ticket-alt/aim.jpg"
       },
       "throw": "jumpthrow",
-      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+      "movement": {
+        "jump": true,
+        "crouch": false,
+        "walk": false,
+        "strafe": null
+      }
     },
     {
       "id": "mirage-t-smoke-jungle-ramp",
@@ -133,7 +163,12 @@
         "image": "img/mirage/jungle-ramp/aim.jpg"
       },
       "throw": "left",
-      "movement": { "jump": false, "crouch": false, "walk": false, "strafe": null }
+      "movement": {
+        "jump": false,
+        "crouch": false,
+        "walk": false,
+        "strafe": null
+      }
     },
     {
       "id": "mirage-t-smoke-jungle-windows",
@@ -152,7 +187,12 @@
         "image": "img/mirage/jungle-windows/lineup.jpg"
       },
       "throw": "left",
-      "movement": { "jump": false, "crouch": false, "walk": false, "strafe": null }
+      "movement": {
+        "jump": false,
+        "crouch": false,
+        "walk": false,
+        "strafe": null
+      }
     },
     {
       "id": "mirage-t-smoke-window-trashcan",
@@ -171,7 +211,12 @@
         "image": null
       },
       "throw": "jumpthrow",
-      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": "right" }
+      "movement": {
+        "jump": true,
+        "crouch": false,
+        "walk": false,
+        "strafe": "right"
+      }
     },
     {
       "id": "mirage-t-smoke-window-trashcan-2",
@@ -190,7 +235,12 @@
         "image": "img/mirage/window-trashcan-2/aim.jpg"
       },
       "throw": "jumpthrow",
-      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": "right" }
+      "movement": {
+        "jump": true,
+        "crouch": false,
+        "walk": false,
+        "strafe": "right"
+      }
     },
     {
       "id": "mirage-t-smoke-window-scaffold",
@@ -209,7 +259,12 @@
         "image": "img/mirage/window-scaffold/aim.jpg"
       },
       "throw": "jumpthrow",
-      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+      "movement": {
+        "jump": true,
+        "crouch": false,
+        "walk": false,
+        "strafe": null
+      }
     },
     {
       "id": "mirage-t-smoke-topmid-trashcan",
@@ -228,7 +283,12 @@
         "image": "img/mirage/topmid-trashcan/aim.jpg"
       },
       "throw": "left",
-      "movement": { "jump": false, "crouch": false, "walk": false, "strafe": null }
+      "movement": {
+        "jump": false,
+        "crouch": false,
+        "walk": false,
+        "strafe": null
+      }
     },
     {
       "id": "mirage-t-smoke-short",
@@ -247,7 +307,12 @@
         "image": "img/mirage/short/aim.jpg"
       },
       "throw": "jumpthrow",
-      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+      "movement": {
+        "jump": true,
+        "crouch": false,
+        "walk": false,
+        "strafe": null
+      }
     },
     {
       "id": "mirage-t-smoke-connector",
@@ -266,7 +331,12 @@
         "image": "img/mirage/connector/aim.jpg"
       },
       "throw": "jumpthrow",
-      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+      "movement": {
+        "jump": true,
+        "crouch": false,
+        "walk": false,
+        "strafe": null
+      }
     },
     {
       "id": "mirage-t-smoke-connector-2",
@@ -285,7 +355,12 @@
         "image": "img/mirage/connector-2/lineup2.jpg"
       },
       "throw": "jumpthrow",
-      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+      "movement": {
+        "jump": true,
+        "crouch": false,
+        "walk": false,
+        "strafe": null
+      }
     },
     {
       "id": "mirage-t-smoke-market-window",
@@ -304,7 +379,12 @@
         "image": "img/mirage/market-window/aim.jpg"
       },
       "throw": "jumpthrow",
-      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+      "movement": {
+        "jump": true,
+        "crouch": false,
+        "walk": false,
+        "strafe": null
+      }
     },
     {
       "id": "mirage-t-smoke-market-door",
@@ -323,7 +403,12 @@
         "image": "img/mirage/market-door/aim.jpg"
       },
       "throw": "jumpthrow",
-      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+      "movement": {
+        "jump": true,
+        "crouch": false,
+        "walk": false,
+        "strafe": null
+      }
     },
     {
       "id": "mirage-t-smoke-bench",
@@ -342,7 +427,12 @@
         "image": "img/mirage/bench/aim1.jpg"
       },
       "throw": "left",
-      "movement": { "jump": false, "crouch": false, "walk": false, "strafe": null }
+      "movement": {
+        "jump": false,
+        "crouch": false,
+        "walk": false,
+        "strafe": null
+      }
     },
     {
       "id": "mirage-t-smoke-short-arch",
@@ -361,7 +451,12 @@
         "image": "img/mirage/short-arch/aim.jpg"
       },
       "throw": "left",
-      "movement": { "jump": false, "crouch": false, "walk": false, "strafe": null }
+      "movement": {
+        "jump": false,
+        "crouch": false,
+        "walk": false,
+        "strafe": null
+      }
     }
   ]
 }
