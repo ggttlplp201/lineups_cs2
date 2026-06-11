@@ -1,0 +1,158 @@
+/* CS2 Lineup Overlay
+   Design intent: legible in <1s over a bright game scene, zero load time
+   (system fonts only), quiet everywhere except the throw line — the one
+   strip that tells the player exactly how to release the grenade. */
+
+:root {
+  --bg: rgba(12, 14, 19, 0.88);
+  --bg-soft: rgba(20, 23, 30, 0.85);
+  --line: rgba(255, 255, 255, 0.09);
+  --text: #e9ecf1;
+  --dim: #9aa3b2;
+  --t: #f0a13c;   /* desert amber — T side */
+  --ct: #5fa8f5;  /* CT blue */
+  --accent: var(--dim);
+  --ok: #58c47a;
+  --bad: #e05d5d;
+  --warn: #e2c044;
+  --radius: 10px;
+}
+body[data-side="T"]  { --accent: var(--t); }
+body[data-side="CT"] { --accent: var(--ct); }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { background: transparent; }
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.45;
+  user-select: none;
+  overflow: hidden;
+}
+
+#app { display: flex; flex-direction: column; gap: 8px; padding: 4px; height: 100vh; }
+
+.panel {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+}
+
+.eyebrow {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+/* ---------- header ---------- */
+.header { padding: 8px 12px; }
+.status { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--dim); }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bad); flex: none; }
+.dot.on { background: var(--ok); }
+.context { margin-top: 4px; font-size: 13px; font-weight: 600; letter-spacing: 0.02em; }
+.context .sep { color: var(--dim); font-weight: 400; padding: 0 4px; }
+.context .grenade { color: var(--accent); }
+.mouse-hint { margin-top: 4px; font-size: 11px; color: var(--warn); }
+
+/* ---------- list ---------- */
+.list { padding: 8px; max-height: 250px; min-height: 0; flex: none; display: flex; flex-direction: column; }
+.list-head { display: flex; justify-content: space-between; align-items: center; padding: 2px 4px 8px; }
+.ghost {
+  font: inherit; font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  color: var(--dim); background: none; border: 1px solid var(--line);
+  border-radius: 5px; padding: 2px 8px; cursor: pointer;
+}
+.ghost.active { color: var(--accent); border-color: var(--accent); }
+
+#lineup-list { list-style: none; overflow-y: auto; scrollbar-width: thin; }
+#lineup-list li {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 8px; border-radius: 6px; cursor: pointer;
+}
+#lineup-list li:hover { background: var(--bg-soft); }
+#lineup-list li.selected {
+  background: var(--bg-soft);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+#lineup-list li.dimmed { opacity: 0.45; }
+#lineup-list .nade { flex: none; width: 18px; height: 18px; color: var(--accent); }
+#lineup-list .meta { min-width: 0; }
+#lineup-list .name { font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#lineup-list .sub { font-size: 11px; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#lineup-list .pips { margin-left: auto; flex: none; display: flex; gap: 2px; }
+.pip { width: 5px; height: 5px; border-radius: 50%; background: var(--line); }
+.pip.full { background: var(--accent); }
+
+.empty { padding: 14px 8px; font-size: 12px; color: var(--dim); }
+
+/* ---------- detail card ---------- */
+/* The card scrolls internally (mouse mode) — stand/aim shots are taller
+   than the window leaves room for. The throw line scrolls with them. */
+.detail { display: flex; flex-direction: column; gap: 10px; flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: thin; }
+
+#lineup-list::-webkit-scrollbar, .detail::-webkit-scrollbar { width: 6px; }
+#lineup-list::-webkit-scrollbar-thumb, .detail::-webkit-scrollbar-thumb {
+  background: var(--line); border-radius: 3px;
+}
+#lineup-list::-webkit-scrollbar-thumb:hover, .detail::-webkit-scrollbar-thumb:hover {
+  background: var(--dim);
+}
+.detail-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.detail-head h2 { font-size: 15px; font-weight: 700; letter-spacing: 0.01em; }
+.target { font-size: 11px; color: var(--dim); margin-top: 1px; }
+.badges { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; flex: none; }
+
+.chip {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
+  padding: 2px 7px; border-radius: 4px;
+  border: 1px solid var(--line); color: var(--dim);
+  text-transform: uppercase; white-space: nowrap;
+}
+.chip.warn { color: var(--warn); border-color: var(--warn); }
+.chip.pin { color: var(--accent); border-color: var(--accent); }
+
+.step p { font-size: 12px; color: var(--text); margin-top: 5px; }
+.shot {
+  margin-top: 5px; border-radius: 6px; overflow: hidden;
+  border: 1px solid var(--line); background: var(--bg-soft);
+}
+.shot img { display: block; width: 100%; height: auto; }
+.shot.pending {
+  display: grid; place-items: center; height: 84px;
+  border-style: dashed; font-size: 11px; color: var(--dim);
+}
+
+/* ---------- the throw line (signature element) ----------
+   One strip, read left to right, is the complete release instruction:
+   [WALK] [STRAFE →] [JUMP] [CROUCH] [LMB / RMB / L+R / JUMPTHROW]      */
+.throw-line {
+  display: flex; align-items: stretch; gap: 6px;
+  background: var(--bg-soft); border: 1px solid var(--line);
+  border-radius: 8px; padding: 8px;
+}
+.throw-chip {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 7px 4px; border-radius: 6px; border: 1px solid var(--line);
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--dim);
+  text-align: center;
+}
+.throw-chip svg { width: 20px; height: 20px; }
+.throw-chip.primary { color: var(--text); border-color: var(--accent); background: rgba(255,255,255,0.03); }
+.throw-chip.strafe  { color: #0d0e12; background: var(--accent); border-color: var(--accent); }
+
+/* ---------- footer ---------- */
+.keys { font-size: 10px; color: var(--dim); text-align: center; letter-spacing: 0.04em; }
+.keys b { color: var(--text); font-weight: 600; }
+
+/* pinned/compact: only the detail card stays */
+body.pinned .list, body.pinned .header, body.pinned .keys { display: none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .panel { transition: opacity 120ms ease; }
+}

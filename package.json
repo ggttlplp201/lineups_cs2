@@ -1,0 +1,16 @@
+{
+  "name": "cs2-lineup-overlay",
+  "version": "0.1.0",
+  "description": "VAC-safe CS2 lineup overlay. External GSI listener + transparent always-on-top window. No memory reading, no injection, ever.",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "install-gsi": "node src/gsi/install-config.js",
+    "simulate": "node scripts/simulate-gsi.js",
+    "test": "node --test"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.0.0"
+  }
+}

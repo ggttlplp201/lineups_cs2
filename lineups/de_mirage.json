@@ -1,0 +1,367 @@
+{
+  "map": "de_mirage",
+  "_notes": "T-side smoke set covering the full Esports Rambles Mirage guide (§6.1 primary reference). Images under img/mirage/ are the user's own compiled clippings of that guide — fine for personal use, do NOT redistribute the app with them bundled. Every entry stays verified:false until it is re-tested in the current build; replace images with your own captures (and record cl_showpos coords into `spot`) during that pass. See img/mirage/README.md.",
+  "lineups": [
+    {
+      "id": "mirage-t-smoke-stairs-tspawn",
+      "name": "Stairs from T spawn",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "A site — Stairs",
+      "difficulty": "easy",
+      "verified": false,
+      "stand": {
+        "text": "At T spawn, tuck into the wall corner on the A side and line up flush with it.",
+        "image": "img/mirage/stairs-tspawn/spot.jpg"
+      },
+      "aim": {
+        "text": "Put the crosshair on the roof edge directly above the dark stain on the wall.",
+        "image": "img/mirage/stairs-tspawn/aim.jpg"
+      },
+      "throw": "jumpthrow",
+      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+    },
+    {
+      "id": "mirage-t-smoke-stairs-ramp",
+      "name": "Stairs from outside ramp",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "A site — Stairs",
+      "difficulty": "medium",
+      "verified": false,
+      "stand": {
+        "text": "Hop onto the first step of the platform outside T ramp and line up with the platform edge.",
+        "image": "img/mirage/stairs-ramp/spot.jpg"
+      },
+      "aim": {
+        "text": "Aim at the middle of the gap between the building and the wooden pillar — the window on the left is a useful reference. Needs to be fairly precise.",
+        "image": "img/mirage/stairs-ramp/aim.jpg"
+      },
+      "throw": "left",
+      "movement": { "jump": false, "crouch": false, "walk": false, "strafe": null }
+    },
+    {
+      "id": "mirage-t-smoke-stairs-alt2",
+      "name": "Stairs (alternate 2)",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "A site — Stairs",
+      "difficulty": "medium",
+      "verified": false,
+      "stand": {
+        "text": "Take the position shown in the screenshot.",
+        "image": "img/mirage/stairs-alt2/position.jpg"
+      },
+      "aim": {
+        "text": "Match the crosshair placement shown, then jumpthrow. The smoke flies long — it takes a moment before it lands on stairs.",
+        "image": "img/mirage/stairs-alt2/aim.jpg"
+      },
+      "throw": "jumpthrow",
+      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+    },
+    {
+      "id": "mirage-t-smoke-stairs-alt3",
+      "name": "Stairs (alternate 3)",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "A site — Stairs",
+      "difficulty": "easy",
+      "verified": false,
+      "stand": {
+        "text": "Take the position shown in the screenshot.",
+        "image": "img/mirage/stairs-alt3/spot.jpg"
+      },
+      "aim": {
+        "text": "Match the crosshair placement shown and throw. This one blooms wide — players can hide inside or under it at sandwich.",
+        "image": "img/mirage/stairs-alt3/aim.jpg"
+      },
+      "throw": "left",
+      "movement": { "jump": false, "crouch": false, "walk": false, "strafe": null }
+    },
+    {
+      "id": "mirage-t-smoke-ticket-tspawn",
+      "name": "Ticket from T spawn",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "A site — Ticket / CT",
+      "difficulty": "easy",
+      "verified": false,
+      "stand": {
+        "text": "Stand up on the short railing beside the metal fence, centered on the fence.",
+        "image": "img/mirage/ticket-tspawn/lineup.jpg"
+      },
+      "aim": {
+        "text": "Aim toward the right side of the small wooden ledge in the corner — it's forgiving, anywhere around the gap between the wood and the wall works.",
+        "image": "img/mirage/ticket-tspawn/aim.jpg"
+      },
+      "throw": "jumpthrow",
+      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+    },
+    {
+      "id": "mirage-t-smoke-ticket-alt",
+      "name": "Ticket box (alternate)",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "A site — Top of ticket box",
+      "difficulty": "easy",
+      "verified": false,
+      "stand": {
+        "text": "Center yourself on the wall in the corner.",
+        "image": "img/mirage/ticket-alt/spot.jpg"
+      },
+      "aim": {
+        "text": "Match the crosshair placement shown, then jumpthrow. Lands on top of the ticket box and blocks more of the vision behind the booth.",
+        "image": "img/mirage/ticket-alt/aim.jpg"
+      },
+      "throw": "jumpthrow",
+      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+    },
+    {
+      "id": "mirage-t-smoke-jungle-ramp",
+      "name": "Jungle from ramp window",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "A site — Jungle",
+      "difficulty": "medium",
+      "verified": false,
+      "stand": {
+        "text": "Go up the platform from T spawn to the first window near ramp (check no CTs are pushing).",
+        "image": "img/mirage/jungle-ramp/position.jpg"
+      },
+      "aim": {
+        "text": "Line yourself up on the dark spot, turn 180°, then aim at the top-right of the small block and throw.",
+        "image": "img/mirage/jungle-ramp/aim.jpg"
+      },
+      "throw": "left",
+      "movement": { "jump": false, "crouch": false, "walk": false, "strafe": null }
+    },
+    {
+      "id": "mirage-t-smoke-jungle-windows",
+      "name": "Jungle from between windows",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "A site — Jungle",
+      "difficulty": "easy",
+      "verified": false,
+      "stand": {
+        "text": "On the platform, stand midway between the two windows.",
+        "image": "img/mirage/jungle-windows/position.jpg"
+      },
+      "aim": {
+        "text": "Aim just left of the pillar, below its top — there's a generous margin, it lands in roughly the same place.",
+        "image": "img/mirage/jungle-windows/lineup.jpg"
+      },
+      "throw": "left",
+      "movement": { "jump": false, "crouch": false, "walk": false, "strafe": null }
+    },
+    {
+      "id": "mirage-t-smoke-window-trashcan",
+      "name": "Window from trash can",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "Mid — Window",
+      "difficulty": "medium",
+      "verified": false,
+      "stand": {
+        "text": "At T spawn, stand in front of the trash can hugging the wall on your right.",
+        "image": "img/mirage/window-trashcan/spot.jpg"
+      },
+      "aim": {
+        "text": "Aim at the top-right corner of the railing, then hold strafe-right (D) through the jumpthrow. Practice the strafe timing a few times.",
+        "image": null
+      },
+      "throw": "jumpthrow",
+      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": "right" }
+    },
+    {
+      "id": "mirage-t-smoke-window-trashcan-2",
+      "name": "Window from trash can #2",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "Mid — Window",
+      "difficulty": "medium",
+      "verified": false,
+      "stand": {
+        "text": "Stand in front of the trash can at T spawn.",
+        "image": "img/mirage/window-trashcan-2/spot.jpg"
+      },
+      "aim": {
+        "text": "Aim by the white border of the wall, lined up with the dark spot — then strafe right into the jumpthrow.",
+        "image": "img/mirage/window-trashcan-2/aim.jpg"
+      },
+      "throw": "jumpthrow",
+      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": "right" }
+    },
+    {
+      "id": "mirage-t-smoke-window-scaffold",
+      "name": "Window from scaffolding",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "Mid — Window",
+      "difficulty": "hard",
+      "verified": false,
+      "stand": {
+        "text": "Center yourself on the first wooden scaffolding pillar, crosshair on the middle of the pillar.",
+        "image": "img/mirage/window-scaffold/spot.jpg"
+      },
+      "aim": {
+        "text": "Aim at the bottom-right section of the hanging wires near the wall corner. Slower to set up — call it with your team. Recent updates shifted this lineup slightly right; re-verify before trusting it.",
+        "image": "img/mirage/window-scaffold/aim.jpg"
+      },
+      "throw": "jumpthrow",
+      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+    },
+    {
+      "id": "mirage-t-smoke-topmid-trashcan",
+      "name": "Top mid from trash can",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "Mid — Top mid crossing",
+      "difficulty": "easy",
+      "verified": false,
+      "stand": {
+        "text": "Jump on top of the trash can in T spawn.",
+        "image": "img/mirage/topmid-trashcan/spot.jpg"
+      },
+      "aim": {
+        "text": "Aim at the top-right part of the antenna and throw. Quick to do off spawn — tell teammates to cross once it blooms.",
+        "image": "img/mirage/topmid-trashcan/aim.jpg"
+      },
+      "throw": "left",
+      "movement": { "jump": false, "crouch": false, "walk": false, "strafe": null }
+    },
+    {
+      "id": "mirage-t-smoke-short",
+      "name": "Short smoke",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "Mid — Short / catwalk",
+      "difficulty": "medium",
+      "verified": false,
+      "stand": {
+        "text": "Take the position shown in the screenshot.",
+        "image": "img/mirage/short/spot.jpg"
+      },
+      "aim": {
+        "text": "Match the crosshair placement shown, then jumpthrow. Covers the push up short on a mid-to-A or A split without getting shot from catwalk.",
+        "image": "img/mirage/short/aim.jpg"
+      },
+      "throw": "jumpthrow",
+      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+    },
+    {
+      "id": "mirage-t-smoke-connector",
+      "name": "Connector smoke",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "Mid — Connector",
+      "difficulty": "medium",
+      "verified": false,
+      "stand": {
+        "text": "Stand in the corner shown in the screenshot.",
+        "image": "img/mirage/connector/spot.jpg"
+      },
+      "aim": {
+        "text": "Aim at the center of the white line on the rug, then jumpthrow. Can leave a small gap at points during its duration — see the alternate connector smoke for full cover.",
+        "image": "img/mirage/connector/aim.jpg"
+      },
+      "throw": "jumpthrow",
+      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+    },
+    {
+      "id": "mirage-t-smoke-connector-2",
+      "name": "Connector smoke #2 (full block)",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "Mid — Connector",
+      "difficulty": "medium",
+      "verified": false,
+      "stand": {
+        "text": "Take the position shown in the screenshot.",
+        "image": "img/mirage/connector-2/spot.jpg"
+      },
+      "aim": {
+        "text": "Match the crosshair placement shown, then jumpthrow. Blocks connector fully, with no gaps.",
+        "image": "img/mirage/connector-2/lineup2.jpg"
+      },
+      "throw": "jumpthrow",
+      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+    },
+    {
+      "id": "mirage-t-smoke-market-window",
+      "name": "Market window",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "B site — Market window",
+      "difficulty": "easy",
+      "verified": false,
+      "stand": {
+        "text": "Take the position shown in the screenshot.",
+        "image": "img/mirage/market-window/position.jpg"
+      },
+      "aim": {
+        "text": "Match the crosshair placement shown, then jumpthrow. Blocks the AWP angle from market window onto B apps.",
+        "image": "img/mirage/market-window/aim.jpg"
+      },
+      "throw": "jumpthrow",
+      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+    },
+    {
+      "id": "mirage-t-smoke-market-door",
+      "name": "Market door",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "B site — Market door",
+      "difficulty": "easy",
+      "verified": false,
+      "stand": {
+        "text": "Stand by the corner shown — same position as the market window smoke.",
+        "image": "img/mirage/market-door/position.jpg"
+      },
+      "aim": {
+        "text": "Match the crosshair placement shown, then jumpthrow. Shuts the market door to slow rotators onto site.",
+        "image": "img/mirage/market-door/aim.jpg"
+      },
+      "throw": "jumpthrow",
+      "movement": { "jump": true, "crouch": false, "walk": false, "strafe": null }
+    },
+    {
+      "id": "mirage-t-smoke-bench",
+      "name": "Bench smoke",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "B site — Bench / jail",
+      "difficulty": "medium",
+      "verified": false,
+      "stand": {
+        "text": "Walk up to the pillar shown in the screenshot.",
+        "image": "img/mirage/bench/lineup.jpg"
+      },
+      "aim": {
+        "text": "Aim at the marked ridge, keeping some space between your crosshair and the tower so the smoke doesn't bounce off it. Blocks bench/jail vision for a B rush or site entry.",
+        "image": "img/mirage/bench/aim1.jpg"
+      },
+      "throw": "left",
+      "movement": { "jump": false, "crouch": false, "walk": false, "strafe": null }
+    },
+    {
+      "id": "mirage-t-smoke-short-arch",
+      "name": "Short arch",
+      "grenade": "smoke",
+      "side": "T",
+      "target": "B site — Short arch",
+      "difficulty": "easy",
+      "verified": false,
+      "stand": {
+        "text": "Stand in the corner, on top of the bags.",
+        "image": "img/mirage/short-arch/spot.jpg"
+      },
+      "aim": {
+        "text": "Match the crosshair placement shown and throw. Blocks the bench and site view of short arch for a B split.",
+        "image": "img/mirage/short-arch/aim.jpg"
+      },
+      "throw": "left",
+      "movement": { "jump": false, "crouch": false, "walk": false, "strafe": null }
+    }
+  ]
+}

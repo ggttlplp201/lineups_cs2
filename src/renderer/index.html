@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; img-src 'self' file:; style-src 'self'; script-src 'self'" />
+  <title>CS2 Lineup Overlay</title>
+  <link rel="stylesheet" href="overlay.css" />
+</head>
+<body data-side="none">
+  <main id="app">
+    <header class="panel header">
+      <div class="status">
+        <span id="status-dot" class="dot"></span>
+        <span id="status-text">Waiting for game data…</span>
+      </div>
+      <div class="context" id="context-strip">No map detected</div>
+      <div class="mouse-hint" id="mouse-hint" hidden>Mouse mode — overlay is clickable</div>
+    </header>
+
+    <section class="panel list" id="list-panel">
+      <div class="list-head">
+        <span class="eyebrow" id="list-title">Lineups</span>
+        <button id="filter-toggle" class="ghost" title="Toggle context filtering">All</button>
+      </div>
+      <ul id="lineup-list"></ul>
+      <div id="list-empty" class="empty" hidden></div>
+    </section>
+
+    <section class="panel detail" id="detail-panel" hidden>
+      <div class="detail-head">
+        <div>
+          <h2 id="detail-name"></h2>
+          <div class="target" id="detail-target"></div>
+        </div>
+        <div class="badges">
+          <span id="detail-difficulty" class="chip diff"></span>
+          <span id="detail-unverified" class="chip warn" hidden>UNVERIFIED</span>
+          <span id="detail-pin" class="chip pin" hidden>PINNED</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <span class="eyebrow">Stand</span>
+        <div class="shot" id="stand-shot"></div>
+        <p id="stand-text"></p>
+      </div>
+
+      <div class="step">
+        <span class="eyebrow">Aim</span>
+        <div class="shot" id="aim-shot"></div>
+        <p id="aim-text"></p>
+      </div>
+
+      <div class="throw-line" id="throw-line"></div>
+    </section>
+
+    <footer class="keys" id="keys"></footer>
+  </main>
+  <script src="overlay.js"></script>
+</body>
+</html>
