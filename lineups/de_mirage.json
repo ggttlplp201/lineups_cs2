@@ -24,6 +24,11 @@
         "crouch": false,
         "walk": false,
         "strafe": null
+      },
+      "spot": {
+        "x": 1398.24,
+        "y": -94.52,
+        "z": -94.88
       }
     },
     {
