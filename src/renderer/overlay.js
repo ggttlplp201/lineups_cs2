@@ -301,13 +301,30 @@ window.overlay.onAutoSelect((id) => {
 });
 
 let toastTimer = null;
-window.overlay.onSpotCaptured(({ id, spot }) => {
+function flash(text, ms = 2500, dim = false) {
   const el = $('toast');
-  const z = spot.z == null ? '' : ` ${Math.round(spot.z)}`;
-  el.textContent = `Spot saved: ${id} (${Math.round(spot.x)} ${Math.round(spot.y)}${z})`;
+  el.textContent = text;
+  el.classList.toggle('dim', dim);
   el.hidden = false;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { el.hidden = true; }, 2500);
+  toastTimer = setTimeout(() => { el.hidden = true; }, ms);
+}
+
+window.overlay.onSpotCaptured(({ id, spot }) => {
+  const z = spot.z == null ? '' : ` ${Math.round(spot.z)}`;
+  flash(`Spot saved: ${id} (${Math.round(spot.x)} ${Math.round(spot.y)}${z})`);
+});
+
+window.overlay.onPositionFix(({ pos, spot, spotsOnMap }) => {
+  const where = `${Math.round(pos.x)} ${Math.round(pos.y)}`;
+  if (spot) {
+    const lu = state.visible.find((l) => l.id === spot);
+    flash(`Position ${where} → ${lu ? lu.name : spot}`);
+  } else if (!spotsOnMap) {
+    flash(`Position ${where} — no spots captured for this map yet (select a lineup, stand there, Alt+S)`, 4000, true);
+  } else {
+    flash(`Position ${where} — no lineup spot within range`, 2500, true);
+  }
 });
 
 window.overlay.ready();

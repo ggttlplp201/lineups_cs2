@@ -217,6 +217,9 @@ app.whenReady().then(() => {
   function handlePosition(pos) {
     lastPosition = pos;
     const id = prox.update(pos);
+    // Always confirm the fix in the UI — without feedback the user can't
+    // tell whether the getpos pipeline is alive or why nothing matched.
+    send('position-fix', { pos, spot: id, spotsOnMap: prox.spots.length });
     if (id === autoSpot) return;
     autoSpot = id;
     if (suppressedSpot && suppressedSpot !== id) suppressedSpot = null; // moved on → override expires

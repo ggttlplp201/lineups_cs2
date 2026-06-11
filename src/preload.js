@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('overlay', {
   selectionChanged: (id) => ipcRenderer.send('selection-changed', id),
   onAutoSelect: on('auto-select'),
   onSpotCaptured: on('spot-captured'),
+  onPositionFix: on('position-fix'),
   onInit: on('init'),
   onContext: on('context'),
   onGsiStatus: on('gsi-status'),
