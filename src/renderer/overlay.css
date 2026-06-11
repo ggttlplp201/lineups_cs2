@@ -59,6 +59,7 @@ body {
 .context .sep { color: var(--dim); font-weight: 400; padding: 0 4px; }
 .context .grenade { color: var(--accent); }
 .mouse-hint { margin-top: 4px; font-size: 11px; color: var(--warn); }
+.gsi-hint { margin-top: 4px; font-size: 11px; color: var(--warn); line-height: 1.4; }
 
 /* ---------- list ---------- */
 .list { padding: 8px; max-height: 250px; min-height: 0; flex: none; display: flex; flex-direction: column; }
@@ -146,9 +147,27 @@ body {
 .throw-chip.primary { color: var(--text); border-color: var(--accent); background: rgba(255,255,255,0.03); }
 .throw-chip.strafe  { color: #0d0e12; background: var(--accent); border-color: var(--accent); }
 
-/* ---------- footer ---------- */
-.keys { font-size: 10px; color: var(--dim); text-align: center; letter-spacing: 0.04em; }
-.keys b { color: var(--text); font-weight: 600; }
+/* ---------- footer: always-visible hotkey strip ---------- */
+.keys {
+  flex: none;
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 4px 12px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 7px 10px;
+  font-size: 10px; color: var(--dim); letter-spacing: 0.04em;
+}
+.key-row { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.keys kbd {
+  font-family: inherit; font-size: 10px; font-weight: 700;
+  color: var(--text);
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 1px 6px;
+}
 
 /* pinned/compact: only the detail card stays */
 body.pinned .list, body.pinned .header, body.pinned .keys { display: none; }

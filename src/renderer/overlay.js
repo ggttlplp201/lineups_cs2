@@ -7,6 +7,7 @@ const state = {
   hotkeys: {},
   ctx: { map: null, side: null, phase: null, equippedGrenade: null, heldGrenades: [] },
   connected: false,
+  gsiInstall: null,  // { ok, message } result of the GSI cfg install attempt
   showAll: false,    // true = ignore grenade/side filter, browse everything for the map
   selectedId: null,
   pinned: false,
@@ -78,6 +79,22 @@ function renderHeader() {
   $('status-text').textContent = state.connected
     ? 'Receiving game data ✓'
     : 'Not connected — start CS2 (fullscreen windowed)';
+
+  // While no data flows, say exactly what the GSI installer did — the #1
+  // failure mode is the cfg not being where CS2 reads it, the #2 is CS2
+  // having been running when the cfg was first written.
+  const hint = $('gsi-hint');
+  if (state.connected || !state.gsiInstall) {
+    hint.hidden = true;
+  } else if (state.gsiInstall.ok === false) {
+    hint.hidden = false;
+    hint.textContent =
+      'GSI config NOT installed — CS2 cfg folder not found. Run: npm run install-gsi -- "<your...>\\csgo\\cfg" then restart CS2.';
+  } else {
+    hint.hidden = false;
+    hint.textContent =
+      'GSI config installed ✓ — if CS2 was already running, restart it (the game only reads the config at startup).';
+  }
 
   const { map, side, equippedGrenade } = state.ctx;
   document.body.dataset.side = side || 'none';
@@ -226,12 +243,18 @@ function prettyMap(name) {
 }
 
 /* ---------- wiring ---------- */
-window.overlay.onInit(({ lineups, hotkeys }) => {
+window.overlay.onInit(({ lineups, hotkeys, gsiInstall }) => {
   state.maps = lineups;
   state.hotkeys = hotkeys;
-  $('keys').innerHTML =
-    `<b>${esc(hotkeys.toggle)}</b> show/hide · <b>${esc(hotkeys.prev)}</b>/<b>${esc(hotkeys.next)}</b> browse · ` +
-    `<b>${esc(hotkeys.pin)}</b> pin · <b>${esc(hotkeys.mouse)}</b> mouse`;
+  state.gsiInstall = gsiInstall || null;
+  $('keys').innerHTML = [
+    [hotkeys.toggle, 'show / hide'],
+    [`${hotkeys.prev} · ${hotkeys.next}`, 'browse'],
+    [hotkeys.pin, 'pin card'],
+    [hotkeys.mouse, 'mouse mode']
+  ].map(([key, label]) =>
+    `<span class="key-row"><kbd>${esc(key)}</kbd><span>${esc(label)}</span></span>`
+  ).join('');
   render();
 });
 
