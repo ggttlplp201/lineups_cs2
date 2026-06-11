@@ -22,8 +22,9 @@ const DEFAULTS = {
   },
   v2: {
     radius: 120,     // units: enter a spot within this 2D distance
-    zTolerance: 200  // generous height tolerance (ramps/stairs/OCR noise)
+    zTolerance: 200  // generous height tolerance (ramps/stairs/eye-vs-feet)
   },
+  consoleLog: null,  // path to CS2's console.log (-condebug); null = auto-detect next to the GSI cfg
   overlay: {
     edge: 'right',   // 'left' | 'right'
     width: 380,

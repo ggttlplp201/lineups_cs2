@@ -47,6 +47,7 @@ within seconds of the game launching.
 | `Alt+[` / `Alt+]` | Previous / next lineup |
 | `Alt+P` | Pin the detail card (hides the list, keeps the card up while you line up) |
 | `Alt+M` | Toggle click-through (overlay starts clickable/scrollable; Alt+M makes it ignore the mouse so it can't eat game input) |
+| `Alt+S` | V2: save your current position into the selected lineup's `spot` (needs a position fix — see V2 below) |
 
 Equipping a smoke on Mirage floats the matching smoke lineups for your side
 to the top automatically; the **All** button browses everything for the map.
@@ -96,12 +97,35 @@ scripts/simulate-gsi.js   fake-CS2 dev tool
 test/                     node:test unit tests
 ```
 
-## V2 (proximity auto-trigger) — not built yet
+## V2 — proximity auto-trigger (practice mode)
 
-V2 adds opt-in screen-OCR of the `cl_showpos` readout to auto-surface the
-nearest lineup. Before starting it: confirm `cl_showpos` works in your
-target game modes, and read `SPEC §7` — debounce OCR jitter, match on X/Y
-with generous Z tolerance, restrict Tesseract to a digit whitelist, and
-upscale the captured region 3–4× (the readout font is tiny). The `spot`
-field in the data model is already reserved for it. Manual selection must
-always override the auto-pick. Screen-reading only — same safety model.
+Walk onto a lineup's stand spot and its card appears automatically (AUTO
+badge); walk away and it hides. Manual selection always overrides the
+auto-pick until you move off the spot.
+
+**Position source:** CS2 prints exact coordinates when you run `getpos` —
+but every position command (`cl_showpos`, `getpos`, `spec_pos`) is
+sv_cheats-protected in CS2, so this works on your own practice server, not
+in matchmaking. The app reads the coordinates by tailing the game's
+`console.log` — passive file reading, same safety model as GSI.
+
+Setup (once):
+
+1. Steam → CS2 → Properties → Launch Options: add `-condebug -conclearlog`
+2. In CS2's console: `bind "j" "getpos"` (any free key)
+3. Start a practice map with `sv_cheats 1`
+
+Then tap `J` as you move — the overlay tracks you. Two workflows:
+
+- **Capture (building the data):** select a lineup, stand on its spot,
+  tap `J`, press `Alt+S` → the coordinate is written into the lineup's
+  `spot` field in `lineups/*.json`. Do this during the verification pass.
+- **Train (using the data):** once spots are captured, walking around the
+  map auto-surfaces the matching card every time you tap `J` near a spot.
+
+Dev without the game: `npm run simulate-position` walks a fake player over
+every captured spot (or pass coordinates: `npm run simulate-position -- -1080 240 -160`).
+
+In-match auto-trigger (no sv_cheats available there) is an open experiment:
+reading the player arrow from a north-up, full-map radar via screen capture.
+The capture pipeline above produces the spot dataset it would need.

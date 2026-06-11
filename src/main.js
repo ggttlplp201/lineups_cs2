@@ -18,6 +18,7 @@ const { ContextEngine } = require('./gsi/context');
 const { installGsiConfig } = require('./gsi/install-config');
 const { visibilityAction } = require('./visibility');
 const { ProximityEngine } = require('./proximity');
+const { ConsoleLogWatcher } = require('./position/condebug');
 
 const PROJECT_ROOT = path.join(__dirname, '..');
 const LINEUPS_DIR = path.join(PROJECT_ROOT, 'lineups');
@@ -213,7 +214,7 @@ app.whenReady().then(() => {
     applyVisibility();
   });
 
-  gsi.on('position', (pos) => {
+  function handlePosition(pos) {
     lastPosition = pos;
     const id = prox.update(pos);
     if (id === autoSpot) return;
@@ -221,7 +222,27 @@ app.whenReady().then(() => {
     if (suppressedSpot && suppressedSpot !== id) suppressedSpot = null; // moved on → override expires
     if (id && id !== suppressedSpot) send('auto-select', id);
     applyVisibility();
-  });
+  }
+
+  // Position sources, all feeding the same proximity pipeline:
+  // 1) dev simulator over HTTP (npm run simulate-position)
+  gsi.on('position', handlePosition);
+
+  // 2) CS2's console.log when launched with -condebug: a `getpos` bind
+  //    prints exact coordinates that we tail out of the log. Practice-server
+  //    feature (getpos is sv_cheats-protected in matches).
+  const consoleLogPath =
+    config.consoleLog ||
+    (install.path ? path.join(path.dirname(install.path), '..', 'console.log') : null);
+  if (consoleLogPath) {
+    const condebug = new ConsoleLogWatcher({ logPath: consoleLogPath });
+    condebug.on('position', handlePosition);
+    condebug.start();
+    console.log(`Watching for getpos fixes in ${consoleLogPath} (requires -condebug launch option)`);
+    app.on('will-quit', () => condebug.stop());
+  } else {
+    console.log('console.log path unknown — set "consoleLog" in config.json to enable getpos tailing.');
+  }
 
   ipcMain.on('pin-state', (_event, value) => { pinned = !!value; });
   ipcMain.on('selection-changed', (_event, id) => { rendererSelection = id; });
