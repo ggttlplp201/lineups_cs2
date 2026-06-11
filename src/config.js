@@ -21,8 +21,10 @@ const DEFAULTS = {
     capture: 'Alt+S' // V2: save the current position into the selected lineup's spot
   },
   v2: {
-    radius: 120,     // units: enter a spot within this 2D distance
-    zTolerance: 200  // generous height tolerance (ramps/stairs/eye-vs-feet)
+    radius: 120,       // units: enter a spot within this 2D distance
+    zTolerance: 200,   // generous height tolerance (ramps/stairs/eye-vs-feet)
+    listRadius: 500,   // side list only shows spots within this distance
+    fixMaxAgeSec: 30   // position fixes older than this stop filtering the list
   },
   consoleLog: null,  // path to CS2's console.log (-condebug); null = auto-detect next to the GSI cfg
   vision: {

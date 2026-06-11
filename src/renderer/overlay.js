@@ -12,6 +12,8 @@ const state = {
   showAll: false,    // true = ignore grenade/side filter, browse everything for the map
   selectedId: null,
   autoId: null,      // V2: lineup auto-selected by proximity (AUTO badge)
+  lastFix: null,     // V2: { pos, at } — most recent position fix
+  v2: { listRadius: 500, fixMaxAgeSec: 30 },
   pinned: false,
   visible: []        // current list order (post filter/sort)
 };
@@ -61,16 +63,28 @@ function lineupsForContext() {
   };
 
   // Context matches float to the top; non-matches stay browsable but dimmed.
-  const sorted = [...all].sort((a, b) => Number(matches(b)) - Number(matches(a)));
-  return { mapName, list: sorted, matches };
+  let sorted = [...all].sort((a, b) => Number(matches(b)) - Number(matches(a)));
+
+  // V2: with a fresh position fix, the list narrows to "what can I throw
+  // from here" — captured spots out of range drop out, uncaptured lineups
+  // stay, and the All toggle bypasses the filter.
+  let nearOnly = false;
+  const fix = state.lastFix;
+  const fresh = fix && (Date.now() - fix.at) / 1000 <= state.v2.fixMaxAgeSec;
+  if (!state.showAll && fresh) {
+    const filtered = window.ListFilter.filterByProximity(sorted, fix.pos, state.v2);
+    nearOnly = filtered.length !== sorted.length;
+    sorted = filtered;
+  }
+  return { mapName, list: sorted, matches, nearOnly };
 }
 
 /* ---------- rendering ---------- */
 function render() {
   renderHeader();
-  const { mapName, list, matches } = lineupsForContext();
+  const { mapName, list, matches, nearOnly } = lineupsForContext();
   state.visible = list;
-  renderList(mapName, list, matches);
+  renderList(mapName, list, matches, nearOnly);
   renderDetail();
   document.body.classList.toggle('pinned', state.pinned);
   window.overlay.setPin(state.pinned);                  // keep main's auto-hide logic in sync
@@ -128,18 +142,22 @@ function renderHeader() {
     : 'No map detected — browsing offline';
 }
 
-function renderList(mapName, list, matches) {
+function renderList(mapName, list, matches, nearOnly) {
   const ul = $('lineup-list');
   ul.replaceChildren();
-  $('list-title').textContent = mapName ? `Lineups — ${prettyMap(mapName)}` : 'Lineups';
+  $('list-title').textContent = mapName
+    ? `Lineups — ${prettyMap(mapName)}${nearOnly ? ' · near you' : ''}`
+    : 'Lineups';
   $('filter-toggle').classList.toggle('active', state.showAll);
 
   const emptyEl = $('list-empty');
   if (!list.length) {
     emptyEl.hidden = false;
-    emptyEl.textContent = mapName
-      ? 'No lineups in the library for this context yet.'
-      : 'No lineup files found. Add lineups/<map>.json to get started.';
+    emptyEl.textContent = nearOnly
+      ? 'No lineup spots within range — walk closer, or press All to browse.'
+      : mapName
+        ? 'No lineups in the library for this context yet.'
+        : 'No lineup files found. Add lineups/<map>.json to get started.';
     return;
   }
   emptyEl.hidden = true;
@@ -263,10 +281,11 @@ function prettyMap(name) {
 }
 
 /* ---------- wiring ---------- */
-window.overlay.onInit(({ lineups, hotkeys, gsiInstall }) => {
+window.overlay.onInit(({ lineups, hotkeys, gsiInstall, v2 }) => {
   state.maps = lineups;
   state.hotkeys = hotkeys;
   state.gsiInstall = gsiInstall || null;
+  state.v2 = { ...state.v2, ...(v2 || {}) };
   $('keys').innerHTML = [
     [hotkeys.toggle, 'show / hide'],
     [`${hotkeys.prev} · ${hotkeys.next}`, 'browse'],
@@ -316,6 +335,8 @@ window.overlay.onSpotCaptured(({ id, spot }) => {
 });
 
 window.overlay.onPositionFix(({ pos, spot, spotsOnMap }) => {
+  state.lastFix = { pos, at: Date.now() };
+  render(); // re-apply the proximity list filter for the new position
   const where = `${Math.round(pos.x)} ${Math.round(pos.y)}`;
   if (spot) {
     const lu = state.visible.find((l) => l.id === spot);
