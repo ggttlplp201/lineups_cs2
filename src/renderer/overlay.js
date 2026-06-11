@@ -270,7 +270,7 @@ window.overlay.onGsiStatus((s) => {
   state.gsiError = s.error || null;
   renderHeader();
 });
-window.overlay.onMouseMode((interactive) => { $('mouse-hint').hidden = !interactive; });
+window.overlay.onMouseMode((interactive) => { $('mouse-hint').hidden = !!interactive; });
 window.overlay.onCommand((cmd) => {
   if (cmd === 'next') move(1);
   else if (cmd === 'prev') move(-1);

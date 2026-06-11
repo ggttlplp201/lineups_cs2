@@ -46,7 +46,7 @@ within seconds of the game launching.
 | `Alt+X` | Show / hide the overlay |
 | `Alt+[` / `Alt+]` | Previous / next lineup |
 | `Alt+P` | Pin the detail card (hides the list, keeps the card up while you line up) |
-| `Alt+M` | Toggle mouse mode (overlay is click-through by default so it never eats game input) |
+| `Alt+M` | Toggle click-through (overlay starts clickable/scrollable; Alt+M makes it ignore the mouse so it can't eat game input) |
 
 Equipping a smoke on Mirage floats the matching smoke lineups for your side
 to the top automatically; the **All** button browses everything for the map.

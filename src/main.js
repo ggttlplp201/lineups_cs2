@@ -22,7 +22,7 @@ const PROJECT_ROOT = path.join(__dirname, '..');
 const LINEUPS_DIR = path.join(PROJECT_ROOT, 'lineups');
 
 let win = null;
-let mouseInteractive = false;
+let mouseInteractive = true; // overlay starts clickable/scrollable; Alt+M toggles click-through
 let pinned = false; // mirrored from the renderer so auto-hide never yanks a pinned card
 
 function send(channel, data) {
@@ -86,8 +86,9 @@ function createWindow(config) {
   // 'screen-saver' keeps us above borderless-fullscreen games.
   win.setAlwaysOnTop(true, 'screen-saver');
   win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
-  // Click-through by default so the overlay never eats game input.
-  win.setIgnoreMouseEvents(true, { forward: true });
+  // Clickable/scrollable by default (user preference); Alt+M switches to
+  // click-through when the overlay should never eat game input.
+  win.setIgnoreMouseEvents(!mouseInteractive, { forward: true });
   win.loadFile(path.join(__dirname, 'renderer', 'index.html'));
   win.on('closed', () => { win = null; });
 }
@@ -144,7 +145,6 @@ app.whenReady().then(() => {
     const action = visibilityAction(ctx, {
       visible: win.isVisible(),
       pinned,
-      mouseMode: mouseInteractive,
       autoShow: config.overlay.autoShow
     });
     if (action === 'show') win.showInactive(); // never steal game focus
