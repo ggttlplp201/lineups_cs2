@@ -158,7 +158,7 @@ app.whenReady().then(() => {
     send('init', {
       lineups: loadLineups(),
       hotkeys: config.hotkeys,
-      gsiInstall: { ok: install.ok, message: install.message }
+      gsiInstall: { ok: install.ok, message: install.message, path: install.path }
     });
     send('context', engine.context);
     send('gsi-status', { connected: gsi.connected });

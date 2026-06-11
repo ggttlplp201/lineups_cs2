@@ -53,14 +53,22 @@ function steamLibraries(steamRoot) {
 }
 
 function findCs2CfgDir() {
+  // A machine can have leftover "Counter-Strike Global Offensive" folders
+  // from old installs. Prefer the library whose appmanifest_730.acf proves
+  // CS2 is actually installed there — that's the copy Steam launches and
+  // the only cfg folder the game will read.
+  const installed = [];
+  const leftover = [];
   for (const root of steamRootCandidates()) {
     if (!fs.existsSync(root)) continue;
     for (const lib of steamLibraries(root)) {
       const cfgDir = path.join(lib, CS2_RELATIVE_CFG);
-      if (fs.existsSync(cfgDir)) return cfgDir;
+      if (!fs.existsSync(cfgDir)) continue;
+      const manifest = path.join(lib, 'steamapps', 'appmanifest_730.acf');
+      (fs.existsSync(manifest) ? installed : leftover).push(cfgDir);
     }
   }
-  return null;
+  return installed[0] || leftover[0] || null;
 }
 
 function buildCfg({ port, token }) {

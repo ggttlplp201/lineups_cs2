@@ -7,7 +7,8 @@ const state = {
   hotkeys: {},
   ctx: { map: null, side: null, phase: null, equippedGrenade: null, heldGrenades: [] },
   connected: false,
-  gsiInstall: null,  // { ok, message } result of the GSI cfg install attempt
+  gsiError: null,    // last listener error (e.g. port in use), if any
+  gsiInstall: null,  // { ok, message, path } result of the GSI cfg install attempt
   showAll: false,    // true = ignore grenade/side filter, browse everything for the map
   selectedId: null,
   pinned: false,
@@ -86,6 +87,9 @@ function renderHeader() {
   const hint = $('gsi-hint');
   if (state.connected || !state.gsiInstall) {
     hint.hidden = true;
+  } else if (state.gsiError) {
+    hint.hidden = false;
+    hint.textContent = `Listener problem: ${state.gsiError}`;
   } else if (state.gsiInstall.ok === false) {
     hint.hidden = false;
     hint.textContent =
@@ -93,7 +97,9 @@ function renderHeader() {
   } else {
     hint.hidden = false;
     hint.textContent =
-      'GSI config installed ✓ — if CS2 was already running, restart it (the game only reads the config at startup).';
+      `GSI config written to: ${state.gsiInstall.path || '(unknown path)'} — ` +
+      'restart CS2 fully (it only reads this at startup). If that path is not the Steam library CS2 actually runs from, ' +
+      'run: npm run install-gsi -- "<correct>\\csgo\\cfg"';
   }
 
   const { map, side, equippedGrenade } = state.ctx;
@@ -259,7 +265,11 @@ window.overlay.onInit(({ lineups, hotkeys, gsiInstall }) => {
 });
 
 window.overlay.onContext((ctx) => { state.ctx = ctx; render(); });
-window.overlay.onGsiStatus((s) => { state.connected = !!s.connected; renderHeader(); });
+window.overlay.onGsiStatus((s) => {
+  state.connected = !!s.connected;
+  state.gsiError = s.error || null;
+  renderHeader();
+});
 window.overlay.onMouseMode((interactive) => { $('mouse-hint').hidden = !interactive; });
 window.overlay.onCommand((cmd) => {
   if (cmd === 'next') move(1);
