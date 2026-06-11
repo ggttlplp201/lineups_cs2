@@ -9,6 +9,8 @@ contextBridge.exposeInMainWorld('overlay', {
   setPin: (pinned) => ipcRenderer.send('pin-state', !!pinned),
   manualSelect: () => ipcRenderer.send('manual-select'),
   selectionChanged: (id) => ipcRenderer.send('selection-changed', id),
+  getVisionSource: () => ipcRenderer.invoke('vision-source'),
+  sendArrowPixel: (arrow) => ipcRenderer.send('arrow-pixel', arrow),
   onAutoSelect: on('auto-select'),
   onSpotCaptured: on('spot-captured'),
   onPositionFix: on('position-fix'),

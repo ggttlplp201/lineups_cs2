@@ -7,18 +7,19 @@
 // game runs in FULLSCREEN WINDOWED / borderless mode. Exclusive fullscreen
 // occludes it. This is surfaced in the README and the in-app status line.
 
-const { app, BrowserWindow, globalShortcut, ipcMain, screen } = require('electron');
+const { app, BrowserWindow, desktopCapturer, globalShortcut, ipcMain, screen } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { pathToFileURL } = require('url');
 
-const { loadConfig } = require('./config');
+const { loadConfig, CONFIG_PATH } = require('./config');
 const { GsiServer } = require('./gsi/server');
 const { ContextEngine } = require('./gsi/context');
 const { installGsiConfig } = require('./gsi/install-config');
 const { visibilityAction } = require('./visibility');
 const { ProximityEngine } = require('./proximity');
 const { ConsoleLogWatcher } = require('./position/condebug');
+const { fitTransform, applyTransform } = require('./vision/radar');
 
 const PROJECT_ROOT = path.join(__dirname, '..');
 const LINEUPS_DIR = path.join(PROJECT_ROOT, 'lineups');
@@ -214,18 +215,64 @@ app.whenReady().then(() => {
     applyVisibility();
   });
 
-  function handlePosition(pos) {
+  function handlePosition(pos, source = 'getpos') {
+    if (source === 'getpos') maybeCalibrateVision(pos);
     lastPosition = pos;
     const id = prox.update(pos);
     // Always confirm the fix in the UI — without feedback the user can't
-    // tell whether the getpos pipeline is alive or why nothing matched.
-    send('position-fix', { pos, spot: id, spotsOnMap: prox.spots.length });
+    // tell whether the position pipeline is alive or why nothing matched.
+    send('position-fix', { pos, spot: id, spotsOnMap: prox.spots.length, source });
     if (id === autoSpot) return;
     autoSpot = id;
     if (suppressedSpot && suppressedSpot !== id) suppressedSpot = null; // moved on → override expires
     if (id && id !== suppressedSpot) send('auto-select', id);
     applyVisibility();
   }
+
+  // --- radar vision (experimental, opt-in): arrow pixel → world position ---
+  // Calibration is learned, not configured: every exact getpos fix that
+  // lands while the radar arrow was just seen becomes a (pixel, world)
+  // pair; with enough spread we solve world = a*pixel + b per axis and
+  // persist it per map. After that, vision alone feeds the same proximity
+  // pipeline — including in matches, where getpos is unavailable.
+  const visionPairs = {};   // map → [{px, py, x, y}]
+  const calibration = config.vision.calibration || {};
+  let lastArrow = null;     // { px, py, size, at }
+
+  function maybeCalibrateVision(pos) {
+    const map = engine.context.map;
+    if (!config.vision.enabled || !map || !lastArrow) return;
+    if (Date.now() - lastArrow.at > 1500) return; // arrow too stale to pair
+    const pairs = (visionPairs[map] = visionPairs[map] || []);
+    pairs.push({ px: lastArrow.px, py: lastArrow.py, x: pos.x, y: pos.y });
+    const t = fitTransform(pairs);
+    if (!t) return;
+    calibration[map] = t;
+    persistCalibration();
+    console.log(`Radar vision calibrated for ${map} (${pairs.length} getpos/arrow pairs)`);
+  }
+
+  function persistCalibration() {
+    try {
+      const onDisk = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
+      onDisk.vision = { ...(onDisk.vision || {}), calibration };
+      fs.writeFileSync(CONFIG_PATH, JSON.stringify(onDisk, null, 2));
+    } catch (err) {
+      console.error(`Could not persist radar calibration: ${err.message}`);
+    }
+  }
+
+  ipcMain.handle('vision-source', async () => {
+    const sources = await desktopCapturer.getSources({ types: ['screen'] });
+    return sources.length ? sources[0].id : null;
+  });
+
+  ipcMain.on('arrow-pixel', (_event, arrow) => {
+    lastArrow = { px: arrow.px, py: arrow.py, size: arrow.size, at: Date.now() };
+    const map = engine.context.map;
+    const t = map && calibration[map];
+    if (t) handlePosition(applyTransform(t, arrow), 'vision');
+  });
 
   // Position sources, all feeding the same proximity pipeline:
   // 1) dev simulator over HTTP (npm run simulate-position)
@@ -276,7 +323,8 @@ app.whenReady().then(() => {
     send('init', {
       lineups: loadLineups(),
       hotkeys: config.hotkeys,
-      gsiInstall: { ok: install.ok, message: install.message, path: install.path }
+      gsiInstall: { ok: install.ok, message: install.message, path: install.path },
+      vision: config.vision
     });
     send('context', engine.context);
     send('gsi-status', { connected: gsi.connected });

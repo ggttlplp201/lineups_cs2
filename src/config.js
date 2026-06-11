@@ -25,6 +25,12 @@ const DEFAULTS = {
     zTolerance: 200  // generous height tolerance (ramps/stairs/eye-vs-feet)
   },
   consoleLog: null,  // path to CS2's console.log (-condebug); null = auto-detect next to the GSI cfg
+  vision: {
+    enabled: false,  // experimental radar vision (see README) — opt-in
+    fps: 2,          // arrow detections per second
+    region: { x: 0, y: 0, width: 480, height: 480 }, // screen rect of the radar
+    calibration: {}  // per-map radar→world transforms, learned from getpos fixes
+  },
   overlay: {
     edge: 'right',   // 'left' | 'right'
     width: 380,
@@ -47,7 +53,14 @@ function loadConfig() {
     ...DEFAULTS,
     ...cfg,
     hotkeys: { ...DEFAULTS.hotkeys, ...(cfg.hotkeys || {}) },
-    overlay: { ...DEFAULTS.overlay, ...(cfg.overlay || {}) }
+    overlay: { ...DEFAULTS.overlay, ...(cfg.overlay || {}) },
+    v2: { ...DEFAULTS.v2, ...(cfg.v2 || {}) },
+    vision: {
+      ...DEFAULTS.vision,
+      ...(cfg.vision || {}),
+      region: { ...DEFAULTS.vision.region, ...((cfg.vision || {}).region || {}) },
+      calibration: { ...((cfg.vision || {}).calibration || {}) }
+    }
   };
   if (!merged.token) {
     merged.token = crypto.randomBytes(16).toString('hex');

@@ -126,6 +126,39 @@ Then tap `J` as you move — the overlay tracks you. Two workflows:
 Dev without the game: `npm run simulate-position` walks a fake player over
 every captured spot (or pass coordinates: `npm run simulate-position -- -1080 240 -160`).
 
-In-match auto-trigger (no sv_cheats available there) is an open experiment:
-reading the player arrow from a north-up, full-map radar via screen capture.
-The capture pipeline above produces the spot dataset it would need.
+## Radar vision — in-match auto-trigger (experimental, opt-in)
+
+Matches don't allow any position command, so the only legal position source
+is what the game already draws: the radar. With vision enabled the app
+screen-captures the radar region a few times per second, finds your white
+player arrow, and converts it to world coordinates — feeding the same
+proximity auto-trigger as above. Screen capture only; nothing touches the
+game.
+
+Required radar settings (legal HUD config, set once in console):
+
+```
+cl_radar_rotate 0
+cl_radar_always_centered 0
+cl_radar_scale 0.3
+```
+
+(North-up, whole map, static — so the arrow moves over a fixed background.)
+
+Setup:
+
+1. In `config.json` set `vision.enabled: true` and set `vision.region` to
+   the screen rectangle of your radar (x/y of its top-left corner plus
+   width/height, in pixels).
+2. **Calibrate once per map** — in a practice session with the getpos
+   pipeline running, tap your `getpos` bind at a few different places on
+   the map. Each tap pairs your exact position with the detected arrow
+   pixel; the app solves the radar→world mapping automatically, persists
+   it to `config.json`, and logs "Radar vision calibrated".
+3. From then on, vision works in real matches: the overlay tracks your
+   radar arrow continuously and auto-surfaces lineups as you reach spots.
+
+Accuracy is radar-limited (roughly ±60 units) and smokes drawn on the radar
+can briefly confuse the arrow detection — the detector prefers blobs near
+your last known position to compensate. Treat it as an experiment; getpos
+in practice mode stays the precise path.
